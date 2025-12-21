@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverwatchStadiumDatabase", "OverwatchStadiumDatabase\OverwatchStadiumDatabase.csproj", "{106CAC32-0565-4EA2-9784-63F9079DA842}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverwatchStadiumDatabase.Worker", "OverwatchStadiumDatabase.Worker\OverwatchStadiumDatabase.Worker.csproj", "{2970CB9A-0433-4272-9A3C-685CF04F78FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{106CAC32-0565-4EA2-9784-63F9079DA842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{106CAC32-0565-4EA2-9784-63F9079DA842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{106CAC32-0565-4EA2-9784-63F9079DA842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{106CAC32-0565-4EA2-9784-63F9079DA842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2970CB9A-0433-4272-9A3C-685CF04F78FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2970CB9A-0433-4272-9A3C-685CF04F78FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2970CB9A-0433-4272-9A3C-685CF04F78FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2970CB9A-0433-4272-9A3C-685CF04F78FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,43 @@
+﻿  name: Update Database
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-db:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Build
+      run: dotnet build -c Release
+
+    - name: Install Playwright CLI
+      run: dotnet tool install --global Microsoft.Playwright.CLI
+
+    - name: Install Playwright Dependencies
+      run: playwright install-deps chromium
+
+    - name: Run Worker
+      run: dotnet run --project OverwatchStadiumDatabase.Worker/OverwatchStadiumDatabase.Worker.csproj -c Release
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add OverwatchStadiumDatabase.Worker/overwatch_stadium.db
+        git commit -m "Update database with latest data" || echo "No changes to commit"
+        git push
+
