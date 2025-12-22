@@ -13,7 +13,6 @@ namespace OverwatchStadiumDatabase.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.11");
 
             modelBuilder.Entity("HeroItem", b =>
@@ -160,7 +159,6 @@ namespace OverwatchStadiumDatabase.Migrations
                 {
                     b.Navigation("ItemBuffs");
                 });
-#pragma warning restore 612, 618
         }
     }
 }
