@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add OverwatchStadiumDatabase.Worker/overwatch_stadium.db
+          git add -f Data/overwatch_stadium.db Data/full_data_dump.sql
           git commit -m "Update database with latest data" || echo "No changes to commit"
           git push
 

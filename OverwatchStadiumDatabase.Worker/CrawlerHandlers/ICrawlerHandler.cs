@@ -1,8 +1,8 @@
 ﻿using Microsoft.Playwright;
 
-namespace OverwatchStadiumDatabase.Worker.DependencyInjection;
+namespace OverwatchStadiumDatabase.Worker.CrawlerHandlers;
 
-public interface  ICrawlerHandler
+public interface ICrawlerHandler
 {
     public string[] TargetUrls { get; }
 

@@ -2,12 +2,15 @@ using OverwatchStadiumDatabase;
 using OverwatchStadiumDatabase.Worker;
 using OverwatchStadiumDatabase.Worker.BackgroundServices;
 using OverwatchStadiumDatabase.Worker.DependencyInjection;
+using OverwatchStadiumDatabase.Worker.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSerilog(configuration => configuration
-    .WriteTo.Console(theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Sixteen)
+builder.Services.AddSerilog(configuration =>
+    configuration.WriteTo.Console(
+        theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Sixteen
+    )
 );
 
 builder.Services.AddPlaywright();
@@ -15,9 +18,13 @@ builder.Services.AddPlaywright();
 builder.Services.AddOverwatchStadiumDatabase();
 
 builder.Services.AddHostedService<MigrateDatabaseBackgroundService>();
-
 builder.Services.AddCrawlerHandlers();
-// builder.Services.AddHostedService<FetchDataBackgroundService>();
+
+builder.Services.AddSingleton<BackgroundServiceOrchestrator>();
+
+builder.Services.AddHostedService<RunCrawlerHandlersBackgroundService>();
+builder.Services.AddHostedService<GenerateSqlScriptBackgroundService>();
+builder.Services.AddHostedService<StopApplicationBackgroundService>();
 
 var app = builder.Build();
 

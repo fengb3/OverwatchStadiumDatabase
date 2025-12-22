@@ -482,3 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+!Data/overwatch_stadium.db
+!Data/full_data_dump.sql

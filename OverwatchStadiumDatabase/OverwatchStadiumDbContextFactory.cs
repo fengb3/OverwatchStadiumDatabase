@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace OverwatchStadiumDatabase;
 
-public class OverwatchStadiumDbContextFactory : IDesignTimeDbContextFactory<OverwatchStadiumDbContext>
+public class OverwatchStadiumDesignTimeDbContextFactory
+    : IDesignTimeDbContextFactory<OverwatchStadiumDbContext>
 {
     public OverwatchStadiumDbContext CreateDbContext(string[] args)
     {
