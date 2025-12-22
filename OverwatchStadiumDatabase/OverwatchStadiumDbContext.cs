@@ -6,8 +6,7 @@ namespace OverwatchStadiumDatabase;
 public class OverwatchStadiumDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Buff> Buffs { get; set; }
-
-    // public DbSet<Models.BuffType> BuffTypes { get; set; }
+    public DbSet<ItemBuff> ItemBuffs { get; set; }
     public DbSet<Hero> Heroes { get; set; }
     public DbSet<Item> Items { get; set; }
 
@@ -16,8 +15,18 @@ public class OverwatchStadiumDbContext(DbContextOptions options) : DbContext(opt
         modelBuilder.Entity<Buff>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.BuffName).IsRequired();
+            entity.Property(e => e.Name).IsRequired();
+            entity.HasIndex(e => e.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<ItemBuff>(entity =>
+        {
+            entity.HasKey(e => e.Id);
             entity.Property(e => e.Value).IsRequired();
+
+            entity.HasOne(e => e.Item).WithMany(i => i.ItemBuffs).HasForeignKey(e => e.ItemId);
+
+            entity.HasOne(e => e.Buff).WithMany().HasForeignKey(e => e.BuffId);
         });
 
         modelBuilder.Entity<Hero>(entity =>
@@ -36,8 +45,6 @@ public class OverwatchStadiumDbContext(DbContextOptions options) : DbContext(opt
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Type).IsRequired();
-
-            entity.HasMany<Buff>(item => item.Buffs);
         });
     }
 }

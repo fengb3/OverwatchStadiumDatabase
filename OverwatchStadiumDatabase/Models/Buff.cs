@@ -2,8 +2,7 @@
 
 public class Buff : Entity<int>
 {
-    public string BuffName { get; set; }
-    public decimal Value { get; set; }
+    public string Name { get; set; }
 }
 
 // public class BuffType : Entity<string>

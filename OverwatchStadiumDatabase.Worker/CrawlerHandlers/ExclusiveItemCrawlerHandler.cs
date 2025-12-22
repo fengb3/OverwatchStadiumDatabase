@@ -59,6 +59,13 @@ public class ExclusiveItemCrawlerHandler(
             return;
         }
 
+        // Load all buffs
+        var allBuffs = await dbContext.Buffs.ToDictionaryAsync(
+            b => b.Name,
+            b => b,
+            cancellationToken
+        );
+
         // All items on a hero's /Stadium page are exclusive to that hero
         var exclusiveItems = await page.QuerySelectorAllAsync("div.ability-details");
 
@@ -83,12 +90,13 @@ public class ExclusiveItemCrawlerHandler(
 
             // Check if the item already exists in the database
             var item = await dbContext
-                .Items.Include(i => i.Buffs)
+                .Items.Include(i => i.ItemBuffs)
+                .ThenInclude(ib => ib.Buff)
                 .FirstOrDefaultAsync(i => i.Name == itemName, cancellationToken);
 
             if (item == null)
             {
-                item = new Item { Name = itemName, Buffs = new List<Buff>() };
+                item = new Item { Name = itemName, ItemBuffs = new List<ItemBuff>() };
                 dbContext.Items.Add(item);
             }
 
@@ -137,7 +145,7 @@ public class ExclusiveItemCrawlerHandler(
             }
 
             // Buffs
-            item.Buffs.Clear();
+            item.ItemBuffs.Clear();
             var statsRows = await itemElement.QuerySelectorAllAsync("div.stats .data-row");
             foreach (var row in statsRows)
             {
@@ -154,7 +162,14 @@ public class ExclusiveItemCrawlerHandler(
 
                         if (decimal.TryParse(valueStr, out var value))
                         {
-                            item.Buffs.Add(new Buff { BuffName = buffName, Value = value });
+                            if (!allBuffs.TryGetValue(buffName, out var buff))
+                            {
+                                buff = new Buff { Name = buffName };
+                                dbContext.Buffs.Add(buff);
+                                allBuffs[buffName] = buff;
+                            }
+
+                            item.ItemBuffs.Add(new ItemBuff { Buff = buff, Value = value });
                         }
                     }
                 }

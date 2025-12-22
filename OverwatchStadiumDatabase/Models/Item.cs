@@ -9,8 +9,8 @@ public class Item
     public decimal Cost { get; set; }
     public string Rarity { get; set; }
     public string Description { get; set; }
-    
-    public ICollection<Buff> Buffs { get; set; }
+
+    public ICollection<ItemBuff> ItemBuffs { get; set; }
 }
 
 /*

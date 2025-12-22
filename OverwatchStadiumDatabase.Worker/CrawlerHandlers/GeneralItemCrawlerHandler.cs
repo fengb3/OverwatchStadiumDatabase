@@ -24,6 +24,13 @@ public class GeneralItemCrawlerHandler(
         var heroes = await dbContext.Heroes.Include(h => h.Items).ToListAsync(cancellationToken);
         logger.LogInformation("Found {Count} heroes to link general items to.", heroes.Count);
 
+        // Load all buffs
+        var allBuffs = await dbContext.Buffs.ToDictionaryAsync(
+            b => b.Name,
+            b => b,
+            cancellationToken
+        );
+
         var element = await page.QuerySelectorAllAsync("div.ability-details");
 
         foreach (var itemElement in element)
@@ -35,12 +42,13 @@ public class GeneralItemCrawlerHandler(
             logger.LogInformation("Processing Item: {ItemName}", itemName);
 
             var item = await dbContext
-                .Items.Include(i => i.Buffs)
+                .Items.Include(i => i.ItemBuffs)
+                .ThenInclude(ib => ib.Buff)
                 .FirstOrDefaultAsync(i => i.Name == itemName, cancellationToken);
 
             if (item == null)
             {
-                item = new Item { Name = itemName, Buffs = new List<Buff>() };
+                item = new Item { Name = itemName, ItemBuffs = new List<ItemBuff>() };
                 dbContext.Items.Add(item);
             }
 
@@ -94,7 +102,7 @@ public class GeneralItemCrawlerHandler(
             }
 
             // Buffs
-            item.Buffs.Clear();
+            item.ItemBuffs.Clear();
             var statsRows = await itemElement.QuerySelectorAllAsync("div.stats .data-row");
             foreach (var row in statsRows)
             {
@@ -111,7 +119,14 @@ public class GeneralItemCrawlerHandler(
 
                         if (decimal.TryParse(valueStr, out var value))
                         {
-                            item.Buffs.Add(new Buff { BuffName = buffName, Value = value });
+                            if (!allBuffs.TryGetValue(buffName, out var buff))
+                            {
+                                buff = new Buff { Name = buffName };
+                                dbContext.Buffs.Add(buff);
+                                allBuffs[buffName] = buff;
+                            }
+
+                            item.ItemBuffs.Add(new ItemBuff { Buff = buff, Value = value });
                         }
                     }
                 }
