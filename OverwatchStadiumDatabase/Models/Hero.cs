@@ -2,9 +2,9 @@
 
 public class Hero : Entity<int>
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
     // public ICollection<HeroExclusive> HeroExclusives { get; set; } = new List<HeroExclusive>();
-    public ICollection<Item> Items { get; set; }
+    public ICollection<Item> Items { get; set; } = new List<Item>();
     
 }
