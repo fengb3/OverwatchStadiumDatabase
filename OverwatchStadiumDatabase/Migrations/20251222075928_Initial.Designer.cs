@@ -10,8 +10,8 @@ using OverwatchStadiumDatabase;
 namespace OverwatchStadiumDatabase.Migrations
 {
     [DbContext(typeof(OverwatchStadiumDbContext))]
-    [Migration("20251222054800_AddHeroExclusives")]
-    partial class AddHeroExclusives
+    [Migration("20251222075928_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,19 +40,14 @@ namespace OverwatchStadiumDatabase.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BuffName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("ItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Value")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Buffs");
                 });
@@ -106,6 +101,30 @@ namespace OverwatchStadiumDatabase.Migrations
                     b.ToTable("Items");
                 });
 
+            modelBuilder.Entity("OverwatchStadiumDatabase.Models.ItemBuff", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BuffId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuffId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ItemBuffs");
+                });
+
             modelBuilder.Entity("HeroItem", b =>
                 {
                     b.HasOne("OverwatchStadiumDatabase.Models.Hero", null)
@@ -121,16 +140,28 @@ namespace OverwatchStadiumDatabase.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OverwatchStadiumDatabase.Models.Buff", b =>
+            modelBuilder.Entity("OverwatchStadiumDatabase.Models.ItemBuff", b =>
                 {
-                    b.HasOne("OverwatchStadiumDatabase.Models.Item", null)
-                        .WithMany("Buffs")
-                        .HasForeignKey("ItemId");
+                    b.HasOne("OverwatchStadiumDatabase.Models.Buff", "Buff")
+                        .WithMany()
+                        .HasForeignKey("BuffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OverwatchStadiumDatabase.Models.Item", "Item")
+                        .WithMany("ItemBuffs")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buff");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("OverwatchStadiumDatabase.Models.Item", b =>
                 {
-                    b.Navigation("Buffs");
+                    b.Navigation("ItemBuffs");
                 });
 #pragma warning restore 612, 618
         }

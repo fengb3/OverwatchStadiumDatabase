@@ -11,6 +11,19 @@ namespace OverwatchStadiumDatabase.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Buffs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Buffs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Heroes",
                 columns: table => new
                 {
@@ -42,37 +55,15 @@ namespace OverwatchStadiumDatabase.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Buffs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    BuffName = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<decimal>(type: "TEXT", nullable: false),
-                    ItemId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Buffs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Buffs_Items_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Items",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "HeroExclusives",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     HeroId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ItemId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ItemsId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HeroExclusives", x => x.Id);
+                    table.PrimaryKey("PK_HeroExclusives", x => new { x.HeroId, x.ItemsId });
                     table.ForeignKey(
                         name: "FK_HeroExclusives_Heroes_HeroId",
                         column: x => x.HeroId,
@@ -80,7 +71,34 @@ namespace OverwatchStadiumDatabase.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HeroExclusives_Items_ItemId",
+                        name: "FK_HeroExclusives_Items_ItemsId",
+                        column: x => x.ItemsId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemBuffs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    BuffId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Value = table.Column<decimal>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemBuffs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ItemBuffs_Buffs_BuffId",
+                        column: x => x.BuffId,
+                        principalTable: "Buffs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ItemBuffs_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
@@ -88,18 +106,24 @@ namespace OverwatchStadiumDatabase.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Buffs_ItemId",
+                name: "IX_Buffs_Name",
                 table: "Buffs",
-                column: "ItemId");
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_HeroExclusives_HeroId",
+                name: "IX_HeroExclusives_ItemsId",
                 table: "HeroExclusives",
-                column: "HeroId");
+                column: "ItemsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HeroExclusives_ItemId",
-                table: "HeroExclusives",
+                name: "IX_ItemBuffs_BuffId",
+                table: "ItemBuffs",
+                column: "BuffId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemBuffs_ItemId",
+                table: "ItemBuffs",
                 column: "ItemId");
         }
 
@@ -107,13 +131,16 @@ namespace OverwatchStadiumDatabase.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Buffs");
-
-            migrationBuilder.DropTable(
                 name: "HeroExclusives");
 
             migrationBuilder.DropTable(
+                name: "ItemBuffs");
+
+            migrationBuilder.DropTable(
                 name: "Heroes");
+
+            migrationBuilder.DropTable(
+                name: "Buffs");
 
             migrationBuilder.DropTable(
                 name: "Items");
