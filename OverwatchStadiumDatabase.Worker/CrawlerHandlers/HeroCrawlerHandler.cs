@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
 using OverwatchStadiumDatabase.Models;
 using OverwatchStadiumDatabase.Worker.DependencyInjection;
+using OverwatchStadiumDatabase.Worker.Services;
 
 namespace OverwatchStadiumDatabase.Worker.CrawlerHandlers;
+
 /// <summary>
 /// 英雄爬取处理器
 /// </summary>
@@ -11,55 +13,45 @@ namespace OverwatchStadiumDatabase.Worker.CrawlerHandlers;
 /// <param name="logger"></param>
 public class HeroCrawlerHandler(
     OverwatchStadiumDbContext dbContext,
+    CrawlerHandlerManager crawlerHandlerManager,
     ILogger<HeroCrawlerHandler> logger
 ) : ICrawlerHandler
 {
-    public string[] TargetUrls => ["https://overwatch.fandom.com/wiki/Stadium"];
+    // public string[] TargetUrls => ["https://overwatch.fandom.com/wiki/Stadium"];
 
     public async Task HandleAsync(IPage page, CancellationToken cancellationToken)
     {
         logger.LogInformation("Starting Hero crawling");
 
-        // Locate the table following the "Heroes" h2
-        var tableLocator = page.Locator(
-            "//h2[contains(., 'Heroes')]/following-sibling::table[contains(@class, 'wikitable')][1]"
-        );
+        //get links under `#mw-pages > div > div`
 
-        if (await tableLocator.CountAsync() == 0)
+        var memberLinks = page.Locator("#mw-pages > div > div a");
+        var count = await memberLinks.CountAsync();
+
+        if (count == 0)
         {
-            logger.LogWarning("Could not find Heroes table.");
+            logger.LogWarning("Could not find any hero links on the category page.");
             return;
         }
 
-        var listItems = tableLocator.Locator("td ul li");
-        var count = await listItems.CountAsync();
-
         logger.LogInformation("Found {Count} potential heroes.", count);
+
+        // count = 6; // for testing, limit to first 6 heroes
 
         for (int i = 0; i < count; i++)
         {
-            var li = listItems.Nth(i);
-
-            // The name is usually the text content.
-            // Sometimes there might be an image link first.
-            // We can try to get the text from the last anchor tag if it exists, or fallback to li text.
-            var anchors = li.Locator("a");
-            string name;
-            if (await anchors.CountAsync() > 1)
-            {
-                name = await anchors.Last.InnerTextAsync();
-            }
-            else
-            {
-                name = await li.InnerTextAsync();
-            }
+            var link = memberLinks.Nth(i);
+            var name = await link.InnerTextAsync();
+            var url = await link.GetAttributeAsync("href");
 
             name = name.Trim();
 
             if (string.IsNullOrWhiteSpace(name))
                 continue;
 
-            logger.LogInformation("Processing Hero: {HeroName}", name);
+            logger.LogInformation("Processing Hero: {HeroName}, Url: {Url}", name, url);
+            
+            crawlerHandlerManager.Register<ExclusiveItemCrawlerHandler>("https://overwatch.fandom.com" + url);
 
             var hero = await dbContext.Heroes.FirstOrDefaultAsync(
                 h => h.Name == name,
@@ -70,6 +62,7 @@ public class HeroCrawlerHandler(
                 hero = new Hero { Name = name };
                 dbContext.Heroes.Add(hero);
             }
+            
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);

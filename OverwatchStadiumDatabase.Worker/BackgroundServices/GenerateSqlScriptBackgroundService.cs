@@ -13,7 +13,7 @@ public class GenerateSqlScriptBackgroundService(
         try
         {
             logger.LogInformation("Waiting for crawling to complete...");
-            await orchestrator.WaitForCrawlingAsync(stoppingToken);
+            await orchestrator.WaitForAsync<RunCrawlerHandlersBackgroundService>(stoppingToken);
             logger.LogInformation("Crawling completed. Starting SQL script generation...");
 
             await using var scriptScope = root.CreateAsyncScope();
@@ -31,7 +31,7 @@ public class GenerateSqlScriptBackgroundService(
         }
         finally
         {
-            orchestrator.SignalSqlGenerationCompleted();
+            orchestrator.SignalComplete<GenerateSqlScriptBackgroundService>();
         }
     }
 }

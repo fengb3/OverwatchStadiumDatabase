@@ -1,8 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OverwatchStadiumDatabase.Worker.Services;
 
 namespace OverwatchStadiumDatabase.Worker.BackgroundServices;
 
-public class MigrateDatabaseBackgroundService(IServiceProvider serviceProvider) : BackgroundService
+public class MigrateDatabaseBackgroundService(
+    IServiceProvider serviceProvider,
+    BackgroundServiceOrchestrator orchestrator
+    ) : BackgroundService
 {
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -17,7 +21,9 @@ public class MigrateDatabaseBackgroundService(IServiceProvider serviceProvider) 
         dbContext.Database.Migrate();
 
         logger.LogInformation("Database migration completed.");
-
+        
+        orchestrator.SignalComplete<MigrateDatabaseBackgroundService>();
+        
         return Task.CompletedTask;
     }
 }

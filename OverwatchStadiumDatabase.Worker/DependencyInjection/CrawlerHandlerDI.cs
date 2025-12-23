@@ -11,17 +11,19 @@ public static partial class CrawlerHandlerExtensions
         services.AddScoped<ISqlScriptGenerator, SqlScriptGenerator>();
 
         var handlerType = typeof(ICrawlerHandler);
-        var handlers = AppDomain
+        var implementationTypes = AppDomain
             .CurrentDomain.GetAssemblies()
             .SelectMany(assembly => assembly.GetTypes())
             .Where(type =>
                 handlerType.IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface
             );
 
-        foreach (var handler in handlers)
+        foreach (var implementationType in implementationTypes)
         {
-            services.AddScoped(handlerType, handler);
+            services.AddKeyedScoped(handlerType, implementationType, implementationType);
         }
+        
+        services.AddSingleton<CrawlerHandlerManager>();
         
         return services;
     }

@@ -24,7 +24,7 @@ public static class Playwright
             return browser;
         });
 
-        services.AddScoped<IBrowserContext>(provider =>
+        services.AddSingleton<IBrowserContext>(provider =>
         {
             var browser = provider.GetRequiredService<IBrowser>();
             var context = browser.NewContextAsync(new BrowserNewContextOptions

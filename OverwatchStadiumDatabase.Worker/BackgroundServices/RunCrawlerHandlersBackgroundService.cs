@@ -12,42 +12,23 @@ public partial class RunCrawlerHandlersBackgroundService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await orchestrator.WaitForAsync<MigrateDatabaseBackgroundService>(stoppingToken);
         var logger = root.CreateScope()
             .ServiceProvider.GetRequiredService<ILogger<RunCrawlerHandlersBackgroundService>>();
         logger.LogInformation("Starting crawler handlers...");
-        var handlers = root.CreateScope().ServiceProvider.GetServices<ICrawlerHandler>().ToList();
-
-        logger.LogInformation("Found {HandlerCount} crawler handlers to execute.", handlers.Count);
 
         try
         {
-            foreach (var handler in handlers)
-            {
-                await using var scope = root.CreateAsyncScope();
+            var manager = root.CreateScope()
+                .ServiceProvider.GetRequiredService<CrawlerHandlerManager>();
 
-                logger.LogInformation(
-                    "Executing crawler handler: {HandlerType}",
-                    handler.GetType().Name
-                );
+            // Register crawler handlers here
+            manager.Register<GeneralItemCrawlerHandler>("https://overwatch.fandom.com/wiki/Stadium/Items");
+            manager.Register<HeroCrawlerHandler>("https://overwatch.fandom.com/wiki/Category:Stadium_hero_pages");
 
-                foreach (var url in handler.TargetUrls)
-                {
-                    logger.LogInformation("Processing URL: {Url}", url);
-                    var page = scope.ServiceProvider.GetRequiredService<IPage>();
-                    await page.GotoAsync(
-                        url,
-                        new PageGotoOptions()
-                        {
-                            Timeout = 200 * 1000, // 200 seconds
-                            WaitUntil = WaitUntilState.DOMContentLoaded,
-                        }
-                    );
-                    await handler.HandleAsync(page, stoppingToken);
-                    logger.LogInformation("Finished crawler handler for {TargetUrls}", url);
-                }
-            }
+            await manager.LoopAsync(stoppingToken);
 
-            logger.LogInformation("All crawler handlers have been executed.");
+            logger.LogInformation("Crawler handlers have been registered.");
         }
         catch (Exception ex)
         {
@@ -55,7 +36,7 @@ public partial class RunCrawlerHandlersBackgroundService(
         }
         finally
         {
-            orchestrator.SignalCrawlingCompleted();
+            orchestrator.SignalComplete<RunCrawlerHandlersBackgroundService>();
         }
     }
 }
