@@ -45,6 +45,12 @@ public class HeroCrawlerHandler(
             var url = await link.GetAttributeAsync("href");
 
             name = name.Trim();
+            
+            // remove tailing `"/Stadium"` if exists
+            if (name.EndsWith("/Stadium"))
+            {
+                name = name.Substring(0, name.Length - "/Stadium".Length).Trim();
+            }
 
             if (string.IsNullOrWhiteSpace(name))
                 continue;
