@@ -86,7 +86,7 @@ public class HeroCrawlerHandler(
         foreach (var url in urls)
         {
             从++;
-            if(从 > 5) break;
+            // if(从 > 5) break; // for testing
             
             logger.LogInformation("Registering ExclusiveItemCrawlerHandler for URL: {Url}", url);
             crawlerHandlerManager.Register<ExclusiveItemCrawlerHandler>(url);
