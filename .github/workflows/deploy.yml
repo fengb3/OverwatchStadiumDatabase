@@ -24,6 +24,9 @@ jobs:
       - name: Install wasm-tools
         run: dotnet workload restore
 
+      - name: Check DB file size (Debug)
+        run: ls -lh Data/overwatch_stadium.db
+
       - name: Publish .NET Core Project
         run: dotnet publish OverwatchStadiumDatabase.Calculator/OverwatchStadiumDatabase.Calculator.csproj -c Release -o release --nologo
 

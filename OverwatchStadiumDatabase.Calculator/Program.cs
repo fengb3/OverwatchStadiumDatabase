@@ -15,7 +15,8 @@ var host = builder.Build();
 
 // Download the database file
 var httpClient = host.Services.GetRequiredService<HttpClient>();
-var dbBytes = await httpClient.GetByteArrayAsync("data/overwatch_stadium.db");
+// Add a timestamp to prevent caching issues
+var dbBytes = await httpClient.GetByteArrayAsync($"data/overwatch_stadium.db?v={DateTime.UtcNow.Ticks}");
 await File.WriteAllBytesAsync("overwatch_stadium.db", dbBytes);
 
 await host.RunAsync();
