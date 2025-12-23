@@ -15,7 +15,6 @@ public class GeneralItemCrawlerHandler(
     ILogger<GeneralItemCrawlerHandler> logger
 ) : ICrawlerHandler
 {
-    // public string[] TargetUrls => ["https://overwatch.fandom.com/wiki/Stadium/Items"];
 
     public async Task HandleAsync(IPage page, CancellationToken cancellationToken)
     {

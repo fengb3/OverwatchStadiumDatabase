@@ -15,24 +15,6 @@ public class ExclusiveItemCrawlerHandler(
     ILogger<ExclusiveItemCrawlerHandler> logger
 ) : ICrawlerHandler
 {
-    // private string[]? _targetUrls;
-
-    // public string[] TargetUrls
-    // {
-    //     get
-    //     {
-    //         if (_targetUrls == null)
-    //         {
-    //             var heroes = dbContext.Heroes.ToList();
-    //             _targetUrls = heroes
-    //                 .Select(h =>
-    //                     $"https://overwatch.fandom.com/wiki/{Uri.EscapeDataString(h.Name.Replace(" ", "_"))}/Stadium"
-    //                 )
-    //                 .ToArray();
-    //         }
-    //         return _targetUrls;
-    //     }
-    // }
 
     public async Task HandleAsync(IPage page, CancellationToken cancellationToken)
     {

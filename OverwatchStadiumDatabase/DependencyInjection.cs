@@ -6,14 +6,14 @@ namespace OverwatchStadiumDatabase;
 
 public static class DependencyInjection
 {
-    public static void ConfigureOverwatchStadiumDatabase(this DbContextOptionsBuilder options)
+    public static void ConfigureOverwatchStadiumDatabase(this DbContextOptionsBuilder options, string connectionString = "Data Source=../Data/overwatch_stadium.db")
     {
-        options.UseSqlite("Data Source=../Data/overwatch_stadium.db");
+        options.UseSqlite(connectionString);
     }
 
-    public static IServiceCollection AddOverwatchStadiumDatabase(this IServiceCollection services)
+    public static IServiceCollection AddOverwatchStadiumDatabase(this IServiceCollection services, string connectionString = "Data Source=../Data/overwatch_stadium.db")
     {
-        services.AddDbContext<OverwatchStadiumDbContext>(ConfigureOverwatchStadiumDatabase);
+        services.AddDbContext<OverwatchStadiumDbContext>(options => options.ConfigureOverwatchStadiumDatabase(connectionString));
 
         return services;
     }

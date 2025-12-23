@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <WasmBuildNative>true</WasmBuildNative>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.10" PrivateAssets="all" />
+        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OverwatchStadiumDatabase\OverwatchStadiumDatabase.csproj" />
+    </ItemGroup>
+
+    <Target Name="CopyDatabase" BeforeTargets="Build">
+        <Copy SourceFiles="..\Data\overwatch_stadium.db" DestinationFolder="wwwroot\data" />
+    </Target>
+
+</Project>

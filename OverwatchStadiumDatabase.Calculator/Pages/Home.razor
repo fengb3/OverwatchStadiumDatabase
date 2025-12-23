@@ -1,0 +1,57 @@
+﻿@page "/"
+@using System.Text.Json
+@using Microsoft.EntityFrameworkCore
+@using OverwatchStadiumDatabase
+@using OverwatchStadiumDatabase.Models
+
+<PageTitle>Home</PageTitle>
+
+<h1>Items</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in items)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">@item.Name</h5>
+                    <span class="badge bg-primary">@item.Rarity</span>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Price: @item.Cost</h6>
+                    <p class="card-text">@item.Description</p>
+                    
+                    @if (item.ItemBuffs.Any())
+                    {
+                        <hr />
+                        <h6>Buffs:</h6>
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var buff in item.ItemBuffs)
+                            {
+                                <li>
+                                    <strong>@buff.Buff?.Name:</strong> @buff.Value
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Inject]
+    public OverwatchStadiumDbContext DbContext { get; set; } = null!;
+    
+    public IEnumerable<Item> items { get; set; } = Enumerable.Empty<Item>();
+
+    protected override void OnInitialized()
+    {
+        items = DbContext.Items
+            .Include(i => i.ItemBuffs)
+            .ThenInclude(ib => ib.Buff)
+            .ToList();
+    }
+
+}
