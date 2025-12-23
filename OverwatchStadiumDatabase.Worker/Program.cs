@@ -1,5 +1,4 @@
 using OverwatchStadiumDatabase;
-using OverwatchStadiumDatabase.Worker;
 using OverwatchStadiumDatabase.Worker.BackgroundServices;
 using OverwatchStadiumDatabase.Worker.DependencyInjection;
 using OverwatchStadiumDatabase.Worker.Services;
@@ -7,8 +6,10 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSerilog(configuration =>
-    configuration.WriteTo.Console(
+builder.Services.AddSerilog(configuration =>configuration
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(
         theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Sixteen
     )
 );
