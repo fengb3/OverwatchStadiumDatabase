@@ -15,6 +15,8 @@ jobs:
       CI: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -23,6 +25,25 @@ jobs:
 
       - name: Build
         run: dotnet build -c Release
+
+      - name: Ensure SQLite DB file is valid
+        shell: bash
+        run: |
+          set -euo pipefail
+          DB="Data/overwatch_stadium.db"
+          # If it's missing, empty, or not a real SQLite file, recreate it.
+          if [ ! -f "$DB" ] || [ ! -s "$DB" ]; then
+            echo "DB missing/empty -> recreate"
+            rm -f "$DB" || true
+            : > "$DB"
+          fi
+          if [ -f "$DB" ]; then
+            head -c 16 "$DB" | grep -q "SQLite format 3" || (
+              echo "DB is not a SQLite database (maybe LFS pointer or corrupt). Recreating...";
+              rm -f "$DB";
+              : > "$DB";
+            )
+          fi
 
       - name: Install Playwright CLI
         run: dotnet tool install --global Microsoft.Playwright.CLI
@@ -40,4 +61,3 @@ jobs:
           git add -f Data/overwatch_stadium.db Data/full_data_dump.sql
           git commit -m "Update database with latest data" || echo "No changes to commit"
           git push
-
