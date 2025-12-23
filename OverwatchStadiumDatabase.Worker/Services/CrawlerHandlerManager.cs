@@ -6,7 +6,7 @@ namespace OverwatchStadiumDatabase.Worker.Services;
 
 public class CrawlerHandlerManager(IServiceProvider root)
 {
-    private Channel<CrawlerHandlerExecutor> _taskChannel = Channel.CreateUnbounded<CrawlerHandlerExecutor>();
+    private readonly Channel<CrawlerHandlerExecutor> _taskChannel = Channel.CreateUnbounded<CrawlerHandlerExecutor>();
 
     public void Register<T>(params string[] urls) where T : ICrawlerHandler
     {
@@ -37,7 +37,7 @@ public class CrawlerHandlerManager(IServiceProvider root)
             .ServiceProvider.GetRequiredService<ILogger<CrawlerHandlerManager>>();
 
         var idleTimeout = TimeSpan.FromMinutes(1);
-        using var concurrency = new SemaphoreSlim(3, 3);
+        using var concurrency = new SemaphoreSlim(2, 2); // Max 1 concurrent handler; adjust as needed
         var runningTasks = new List<Task>();
 
         try
