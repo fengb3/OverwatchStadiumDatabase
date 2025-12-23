@@ -38,14 +38,20 @@ public class HeroCrawlerHandler(
 
         // count = 6; // for testing, limit to first 6 heroes
 
+        var urls = new List<string>();
+
         for (int i = 0; i < count; i++)
         {
             var link = memberLinks.Nth(i);
             var name = await link.InnerTextAsync();
             var url = await link.GetAttributeAsync("href");
+            if (string.IsNullOrWhiteSpace(url))
+                continue;
+
+            urls.Add("https://overwatch.fandom.com" + url);
 
             name = name.Trim();
-            
+
             // remove tailing `/Stadium` if exists
             if (name.EndsWith("/Stadium"))
             {
@@ -56,8 +62,10 @@ public class HeroCrawlerHandler(
                 continue;
 
             logger.LogInformation("Processing Hero: {HeroName}, Url: {Url}", name, url);
-            
-            crawlerHandlerManager.Register<ExclusiveItemCrawlerHandler>("https://overwatch.fandom.com" + url);
+
+            // crawlerHandlerManager.Register<ExclusiveItemCrawlerHandler>(
+            //     "https://overwatch.fandom.com" + url
+            // );
 
             var hero = await dbContext.Heroes.FirstOrDefaultAsync(
                 h => h.Name == name,
@@ -68,10 +76,25 @@ public class HeroCrawlerHandler(
                 hero = new Hero { Name = name };
                 dbContext.Heroes.Add(hero);
             }
-            
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Hero crawling completed.");
+
+
+        var 从 = 0;
+        foreach (var url in urls)
+        {
+            从++;
+            if(从 > 5) break;
+            
+            logger.LogInformation("Registering ExclusiveItemCrawlerHandler for URL: {Url}", url);
+            crawlerHandlerManager.Register<ExclusiveItemCrawlerHandler>(url);
+        }
+
+        logger.LogInformation("Registering GeneralItemCrawlerHandler for general items page.");
+        crawlerHandlerManager.Register<GeneralItemCrawlerHandler>(
+            "https://overwatch.fandom.com/wiki/Stadium/Items"
+        );
     }
 }

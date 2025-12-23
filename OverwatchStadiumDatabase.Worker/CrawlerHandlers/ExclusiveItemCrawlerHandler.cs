@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
 using OverwatchStadiumDatabase.Models;
-using OverwatchStadiumDatabase.Worker.DependencyInjection;
 
 namespace OverwatchStadiumDatabase.Worker.CrawlerHandlers;
 
@@ -71,11 +70,10 @@ public class ExclusiveItemCrawlerHandler(
 
         foreach (var itemElement in exclusiveItems)
         {
+            // Keep existing behavior: skip blocks without a type.
             var typeElement = await itemElement.QuerySelectorAsync("div.type-block");
             if (typeElement == null)
                 continue;
-
-            var typeText = await typeElement.InnerTextAsync();
 
             var header = await itemElement.QuerySelectorAsync("div.header");
             if (header == null)
@@ -96,9 +94,9 @@ public class ExclusiveItemCrawlerHandler(
 
             if (item == null)
             {
-                item = new Item 
-                { 
-                    Name = itemName, 
+                item = new Item
+                {
+                    Name = itemName,
                     ItemBuffs = new List<ItemBuff>(),
                     ImageUri = new Uri("about:blank"),
                     Type = string.Empty,
@@ -108,80 +106,14 @@ public class ExclusiveItemCrawlerHandler(
                 dbContext.Items.Add(item);
             }
 
-            // Image
-            var imgElement = await itemElement.QuerySelectorAsync("div.ability-icon img");
-            if (imgElement != null)
-            {
-                var src = await imgElement.GetAttributeAsync("src");
-                if (!string.IsNullOrEmpty(src) && Uri.TryCreate(src, UriKind.Absolute, out var uri))
-                {
-                    item.ImageUri = uri;
-                }
-            }
-
-            // Type
-            item.Type = typeText.Replace("Type", "").Trim();
-
-            // Rarity
-            var rarityElement = await itemElement.QuerySelectorAsync("div.stadium-rarity");
-            if (rarityElement != null)
-            {
-                item.Rarity = (await rarityElement.InnerTextAsync()).Trim();
-            }
-
-            if (string.IsNullOrEmpty(item.Rarity))
-            {
-                item.Rarity = "Common";
-            }
-
-            // Cost
-            var costElement = await itemElement.QuerySelectorAsync("div.stadium-cost b");
-            if (costElement != null)
-            {
-                var costText = await costElement.InnerTextAsync();
-                if (decimal.TryParse(costText.Replace(",", ""), out var cost))
-                {
-                    item.Cost = cost;
-                }
-            }
-
-            // Description
-            var descElement = await itemElement.QuerySelectorAsync("div.summary-description");
-            if (descElement != null)
-            {
-                item.Description = (await descElement.InnerTextAsync()).Trim();
-            }
-
-            // Buffs
-            item.ItemBuffs.Clear();
-            var statsRows = await itemElement.QuerySelectorAllAsync("div.stats .data-row");
-            foreach (var row in statsRows)
-            {
-                var valueElement = await row.QuerySelectorAsync(".data-row-value");
-                if (valueElement != null)
-                {
-                    var text = (await valueElement.InnerTextAsync()).Trim();
-                    // Regex to match number (with optional %, +, -) and text
-                    var match = Regex.Match(text, @"^([+\-]?[\d\.,]+%?)\s+(.*)$");
-                    if (match.Success)
-                    {
-                        var valueStr = match.Groups[1].Value.Replace("%", "").Replace("+", "");
-                        var buffName = match.Groups[2].Value.Trim();
-
-                        if (decimal.TryParse(valueStr, out var value))
-                        {
-                            if (!allBuffs.TryGetValue(buffName, out var buff))
-                            {
-                                buff = new Buff { Name = buffName };
-                                dbContext.Buffs.Add(buff);
-                                allBuffs[buffName] = buff;
-                            }
-
-                            item.ItemBuffs.Add(new ItemBuff { Buff = buff, Value = value });
-                        }
-                    }
-                }
-            }
+            await ItemCrawlerShared.ApplyBasicItemDataAsync(item, itemElement, cancellationToken);
+            await ItemCrawlerShared.ReplaceItemBuffsAsync(
+                dbContext,
+                item,
+                itemElement,
+                allBuffs,
+                cancellationToken
+            );
 
             // Add to hero's items collection if not already there
             // EF Core will automatically manage the HeroExclusive join table

@@ -1,10 +1,9 @@
-﻿using OverwatchStadiumDatabase.Worker.BackgroundServices;
-using OverwatchStadiumDatabase.Worker.CrawlerHandlers;
+﻿using OverwatchStadiumDatabase.Worker.CrawlerHandlers;
 using OverwatchStadiumDatabase.Worker.Services;
 
 namespace OverwatchStadiumDatabase.Worker.DependencyInjection;
 
-public static partial class CrawlerHandlerExtensions
+public static class CrawlerHandlerExtensions
 {
     public static IServiceCollection AddCrawlerHandlers(this IServiceCollection services)
     {

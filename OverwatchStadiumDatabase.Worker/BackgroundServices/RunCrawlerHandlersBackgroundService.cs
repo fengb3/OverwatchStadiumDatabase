@@ -23,8 +23,10 @@ public partial class RunCrawlerHandlersBackgroundService(
                 .ServiceProvider.GetRequiredService<CrawlerHandlerManager>();
 
             // Register crawler handlers here
-            manager.Register<GeneralItemCrawlerHandler>("https://overwatch.fandom.com/wiki/Stadium/Items");
-            manager.Register<HeroCrawlerHandler>("https://overwatch.fandom.com/wiki/Category:Stadium_hero_pages");
+            // manager.Register<GeneralItemCrawlerHandler>("https://overwatch.fandom.com/wiki/Stadium/Items");
+            manager.Register<HeroCrawlerHandler>(
+                "https://overwatch.fandom.com/wiki/Category:Stadium_hero_pages"
+            );
 
             await manager.LoopAsync(stoppingToken);
 
