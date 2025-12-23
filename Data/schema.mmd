@@ -1,0 +1,39 @@
+﻿erDiagram
+    BUFFS {
+        int Id PK
+        string Name "Unique"
+    }
+
+    HEROES {
+        int Id PK
+        string Name
+    }
+
+    ITEMS {
+        int Id PK
+        string Name
+        string ImageUri "stored as TEXT (URL string)"
+        string Type
+        decimal Cost
+        string Rarity
+        string Description
+    }
+
+    ITEMBUFFS {
+        int Id PK
+        int ItemId FK
+        int BuffId FK
+        decimal Value
+    }
+
+    HEROEXCLUSIVES {
+        int HeroId PK, FK
+        int ItemsId PK, FK
+    }
+
+    ITEMS ||--o{ ITEMBUFFS : has
+    BUFFS ||--o{ ITEMBUFFS : referenced_by
+
+    HEROES ||--o{ HEROEXCLUSIVES : links
+    ITEMS  ||--o{ HEROEXCLUSIVES : links
+
