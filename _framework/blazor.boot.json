@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "OverwatchStadiumDatabase.Calculator",
   "resources": {
-    "hash": "sha256-RTsuxpQ/7AKZDuf+9SA9zIN5uWXsD5za7qikYU1UXbw=",
+    "hash": "sha256-tVVkWA4u9o94mb7ONQd7wzOBn27OmVoXm2mZL1ynvjc=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.Web.kk052fg825.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
       "Microsoft.AspNetCore.Components.WebAssembly.0djuixc3en.wasm": "Microsoft.AspNetCore.Components.WebAssembly.wasm",
@@ -25,8 +25,8 @@
       "Microsoft.Extensions.Primitives.wgkaqcaqxl.wasm": "Microsoft.Extensions.Primitives.wasm",
       "Microsoft.JSInterop.rxi9vbnbtx.wasm": "Microsoft.JSInterop.wasm",
       "Microsoft.JSInterop.WebAssembly.9tiedlnvko.wasm": "Microsoft.JSInterop.WebAssembly.wasm",
-      "OverwatchStadiumDatabase.4lk0mbvnf4.wasm": "OverwatchStadiumDatabase.wasm",
-      "OverwatchStadiumDatabase.Calculator.9gpgxkc046.wasm": "OverwatchStadiumDatabase.Calculator.wasm",
+      "OverwatchStadiumDatabase.Calculator.ypko0ow8d3.wasm": "OverwatchStadiumDatabase.Calculator.wasm",
+      "OverwatchStadiumDatabase.qa6958obqm.wasm": "OverwatchStadiumDatabase.wasm",
       "SQLitePCLRaw.batteries_v2.sdspdo4vix.wasm": "SQLitePCLRaw.batteries_v2.wasm",
       "SQLitePCLRaw.core.uubjf3tta1.wasm": "SQLitePCLRaw.core.wasm",
       "SQLitePCLRaw.provider.e_sqlite3.fi94k82bq2.wasm": "SQLitePCLRaw.provider.e_sqlite3.wasm",
@@ -121,8 +121,8 @@
       "Microsoft.Extensions.Primitives.wgkaqcaqxl.wasm": "sha256-4E9QgG80eMrFZtU2cQ3IdWiSy9K4odn43sch89M9Y9Y=",
       "Microsoft.JSInterop.rxi9vbnbtx.wasm": "sha256-H4MutjFRuh9eKltIxLiXzoov1XYf09ObW1OKn0wlPrQ=",
       "Microsoft.JSInterop.WebAssembly.9tiedlnvko.wasm": "sha256-vScvGCGFOzwoTsy7VKfMU9uuEskXbOdWabIc80iDa9g=",
-      "OverwatchStadiumDatabase.4lk0mbvnf4.wasm": "sha256-OPqyDTx7QF009Oueh0RiF0wqTMqB05tU1rGfV/SnmHk=",
-      "OverwatchStadiumDatabase.Calculator.9gpgxkc046.wasm": "sha256-2TXP1OjEoUk74DdZdgLYXA5nLxQ1TBtLFH2gJcg6lKQ=",
+      "OverwatchStadiumDatabase.Calculator.ypko0ow8d3.wasm": "sha256-5t59lpxZPdA7lFP7Hj0ZYfLJKExC+xpSL3nEv4QOR9g=",
+      "OverwatchStadiumDatabase.qa6958obqm.wasm": "sha256-3vKbAEWQWInla2DYEK261yh7ttgYlW6HHxT5lTdOjYM=",
       "SQLitePCLRaw.batteries_v2.sdspdo4vix.wasm": "sha256-EBdlJIx0oF67OlsbET7oQZWUEOVSwZFKzBCfZy3VsPE=",
       "SQLitePCLRaw.core.uubjf3tta1.wasm": "sha256-OtIBJUQ8LCbWmr5PBNEn+rCbFd5aHrPNXCv+0p3U2oA=",
       "SQLitePCLRaw.provider.e_sqlite3.fi94k82bq2.wasm": "sha256-J50F2aYj7NJ+t2wUb1GiYRhwVEBof97fmzrupKV+BEU=",
