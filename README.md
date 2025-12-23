@@ -1,5 +1,7 @@
 # Overwatch Stadium Database
 
+[![Update Database](https://github.com/fengb3/OverwatchStadiumDatabase/actions/workflows/update-db.yml/badge.svg)](https://github.com/fengb3/OverwatchStadiumDatabase/actions/workflows/update-db.yml)
+
 weekly updated Overwatch Stadium game data.
 
 ## Data Access
