@@ -3,14 +3,14 @@
 public class Item
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public Uri ImageUri { get; set; }
-    public string Type { get; set; }
+    public required string Name { get; set; }
+    public required Uri ImageUri { get; set; }
+    public required string Type { get; set; }
     public decimal Cost { get; set; }
-    public string Rarity { get; set; }
-    public string Description { get; set; }
+    public required string Rarity { get; set; }
+    public required string Description { get; set; }
 
-    public ICollection<ItemBuff> ItemBuffs { get; set; }
+    public ICollection<ItemBuff> ItemBuffs { get; set; } = new List<ItemBuff>();
 }
 
 /*

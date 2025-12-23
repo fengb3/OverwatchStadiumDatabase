@@ -2,7 +2,7 @@
 
 public class Buff : Entity<int>
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }
 
 // public class BuffType : Entity<string>

@@ -96,7 +96,15 @@ public class ExclusiveItemCrawlerHandler(
 
             if (item == null)
             {
-                item = new Item { Name = itemName, ItemBuffs = new List<ItemBuff>() };
+                item = new Item 
+                { 
+                    Name = itemName, 
+                    ItemBuffs = new List<ItemBuff>(),
+                    ImageUri = new Uri("about:blank"),
+                    Type = string.Empty,
+                    Rarity = string.Empty,
+                    Description = string.Empty
+                };
                 dbContext.Items.Add(item);
             }
 
