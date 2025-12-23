@@ -482,5 +482,10 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# SQLite database files
 !Data/overwatch_stadium.db
 !Data/full_data_dump.sql
+
+*.db-wal
+*.db-shm
