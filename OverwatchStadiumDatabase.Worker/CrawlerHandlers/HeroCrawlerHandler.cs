@@ -46,7 +46,7 @@ public class HeroCrawlerHandler(
 
             name = name.Trim();
             
-            // remove tailing `"/Stadium"` if exists
+            // remove tailing `/Stadium` if exists
             if (name.EndsWith("/Stadium"))
             {
                 name = name.Substring(0, name.Length - "/Stadium".Length).Trim();
