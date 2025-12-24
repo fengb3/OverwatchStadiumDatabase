@@ -23,8 +23,8 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      - name: Build
-        run: dotnet build -c Release
+      - name: Build Worker project
+        run: dotnet build OverwatchStadiumDatabase.Worker/OverwatchStadiumDatabase.Worker.csproj -c Release
 
       - name: Ensure SQLite DB file is valid
         shell: bash
