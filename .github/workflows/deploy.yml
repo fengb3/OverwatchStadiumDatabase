@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'Data/**'
+      - 'OverwatchStadiumDatabase.Worker/**'
   workflow_dispatch:
 
 permissions:
