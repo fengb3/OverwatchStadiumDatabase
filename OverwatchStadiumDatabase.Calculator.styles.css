@@ -160,3 +160,29 @@ main[b-miw08xo0gj] {
         overflow-y: auto;
     }
 }
+/* /Pages/Home.razor.rz.scp.css */
+.ow-item-card[b-u1knngy9ql] {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ow-item-title[b-u1knngy9ql] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 75%;
+}
+
+.ow-item-desc[b-u1knngy9ql] {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.ow-item-buffs[b-u1knngy9ql] {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
