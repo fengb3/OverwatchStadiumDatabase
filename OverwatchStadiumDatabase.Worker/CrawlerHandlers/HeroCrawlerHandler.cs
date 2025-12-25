@@ -81,13 +81,12 @@ public class HeroCrawlerHandler(
         await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Hero crawling completed.");
 
-
         var 从 = 0;
         foreach (var url in urls)
         {
             从++;
             // if(从 > 5) break; // for testing
-            
+
             logger.LogInformation("Registering ExclusiveItemCrawlerHandler for URL: {Url}", url);
             crawlerHandlerManager.Register<ExclusiveItemCrawlerHandler>(url);
         }

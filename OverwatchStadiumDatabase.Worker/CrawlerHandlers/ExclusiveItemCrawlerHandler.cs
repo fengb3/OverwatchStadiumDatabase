@@ -15,9 +15,15 @@ public class ExclusiveItemCrawlerHandler(
     ILogger<ExclusiveItemCrawlerHandler> logger
 ) : ICrawlerHandler
 {
-
     public async Task HandleAsync(IPage page, CancellationToken cancellationToken)
     {
+        Uri? baseUri = null;
+        if (
+            !string.IsNullOrWhiteSpace(page.Url)
+            && Uri.TryCreate(page.Url, UriKind.Absolute, out var parsedBaseUri)
+        )
+            baseUri = parsedBaseUri;
+
         // Extract hero name from current URL
         var currentUrl = page.Url;
         var heroName = ExtractHeroNameFromUrl(currentUrl);
@@ -83,12 +89,19 @@ public class ExclusiveItemCrawlerHandler(
                     ImageUri = new Uri("about:blank"),
                     Type = string.Empty,
                     Rarity = string.Empty,
-                    Description = string.Empty
+                    Description = string.Empty,
                 };
                 dbContext.Items.Add(item);
             }
 
-            await ItemCrawlerShared.ApplyBasicItemDataAsync(item, itemElement, cancellationToken);
+            await ItemCrawlerShared.ApplyBasicItemDataAsync(
+                item,
+                itemElement,
+                baseUri,
+                logger,
+                itemName,
+                cancellationToken
+            );
             await ItemCrawlerShared.ReplaceItemBuffsAsync(
                 dbContext,
                 item,

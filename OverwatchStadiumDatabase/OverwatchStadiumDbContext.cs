@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OverwatchStadiumDatabase.Models;
 
 namespace OverwatchStadiumDatabase;
@@ -45,6 +46,19 @@ public class OverwatchStadiumDbContext(DbContextOptions options) : DbContext(opt
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Type).IsRequired();
+
+            var imageUriProperty = entity
+                .Property(e => e.ImageUri)
+                .IsRequired()
+                .HasConversion(uri => uri.ToString(), s => new Uri(s, UriKind.Absolute));
+
+            imageUriProperty.Metadata.SetValueComparer(
+                new ValueComparer<Uri>(
+                    (a, b) => a.ToString() == b.ToString(),
+                    v => v.ToString().GetHashCode(StringComparison.Ordinal),
+                    v => new Uri(v.ToString(), UriKind.Absolute)
+                )
+            );
         });
     }
 }

@@ -15,9 +15,15 @@ public class GeneralItemCrawlerHandler(
     ILogger<GeneralItemCrawlerHandler> logger
 ) : ICrawlerHandler
 {
-
     public async Task HandleAsync(IPage page, CancellationToken cancellationToken)
     {
+        Uri? baseUri = null;
+        if (
+            !string.IsNullOrWhiteSpace(page.Url)
+            && Uri.TryCreate(page.Url, UriKind.Absolute, out var parsedBaseUri)
+        )
+            baseUri = parsedBaseUri;
+
         // Fetch all heroes to link general items to them
         var heroes = await dbContext.Heroes.Include(h => h.Items).ToListAsync(cancellationToken);
         logger.LogInformation("Found {Count} heroes to link general items to.", heroes.Count);
@@ -58,7 +64,14 @@ public class GeneralItemCrawlerHandler(
                 dbContext.Items.Add(item);
             }
 
-            await ItemCrawlerShared.ApplyBasicItemDataAsync(item, itemElement, cancellationToken);
+            await ItemCrawlerShared.ApplyBasicItemDataAsync(
+                item,
+                itemElement,
+                baseUri,
+                logger,
+                itemName,
+                cancellationToken
+            );
             await ItemCrawlerShared.ReplaceItemBuffsAsync(
                 dbContext,
                 item,
