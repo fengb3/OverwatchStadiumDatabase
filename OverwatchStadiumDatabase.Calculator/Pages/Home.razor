@@ -6,52 +6,67 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Items</h1>
+<MudText Typo="Typo.h4" GutterBottom="true">Items</MudText>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var item in items)
-    {
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">@item.Name</h5>
-                    <span class="badge bg-primary">@item.Rarity</span>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Price: @item.Cost</h6>
-                    <p class="card-text">@item.Description</p>
-                    
-                    @if (item.ItemBuffs.Any())
+@foreach (var group in items.GroupBy(i => i.Type).OrderBy(g => g.Key))
+{
+    <MudText Typo="Typo.h5" Class="mt-6 mb-2">@group.Key</MudText>
+
+    <MudGrid Spacing="3">
+        @foreach (var item in group)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Class="pa-4 ow-item-card" Elevation="2">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.h6" Class="ow-item-title">@item.Name</MudText>
+                        <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled">@item.Rarity</MudChip>
+                    </MudStack>
+
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary" Class="mt-2">
+                        Price: @item.Cost
+                    </MudText>
+
+                    @if (!string.IsNullOrWhiteSpace(item.Description))
                     {
-                        <hr />
-                        <h6>Buffs:</h6>
-                        <ul class="list-unstyled mb-0">
-                            @foreach (var buff in item.ItemBuffs)
-                            {
-                                <li>
-                                    <strong>@buff.Buff?.Name:</strong> @buff.Value
-                                </li>
-                            }
-                        </ul>
+                        <MudText Class="mt-2 ow-item-desc">@item.Description</MudText>
                     }
-                </div>
-            </div>
-        </div>
-    }
-</div>
+
+                    @if (item.ItemBuffs?.Any() == true)
+                    {
+                        <MudDivider Class="my-3" />
+                        <MudText Typo="Typo.subtitle1">Buffs</MudText>
+
+                        <div class="ow-item-buffs">
+                            <MudList T="string" Dense="true">
+                                @foreach (var buff in item.ItemBuffs)
+                                {
+                                    <MudListItem T="string">
+                                        <MudText><b>@buff.Buff?.Name:</b> @buff.Value</MudText>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        </div>
+                    }
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @code {
     [Inject]
     public OverwatchStadiumDbContext DbContext { get; set; } = null!;
-    
+
     public IEnumerable<Item> items { get; set; } = Enumerable.Empty<Item>();
 
     protected override void OnInitialized()
     {
         items = DbContext.Items
-            .Include(i => i.ItemBuffs)
-            .ThenInclude(ib => ib.Buff)
-            .ToList();
+        .Include(i => i.ItemBuffs)
+        .ThenInclude(ib => ib.Buff)
+            .OrderBy(i => i.Type)
+            .ThenBy(i => i.Name)
+        .ToList();
     }
 
 }

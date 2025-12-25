@@ -1,0 +1,25 @@
+.ow-item-card {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ow-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 75%;
+}
+
+.ow-item-desc {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.ow-item-buffs {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
