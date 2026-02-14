@@ -1,5 +1,5 @@
 -- Overwatch Stadium Database Full Dump
--- Generated at 2026-02-13T00:51:55.4095141Z
+-- Generated at 2026-02-14T00:48:42.8527810Z
 -- Note: This script is designed to be compatible with SQLite, PostgreSQL, SQL Server, and MySQL (with ANSI_QUOTES enabled).
 
 -- SQL Server: Enable Identity Insert
@@ -45,6 +45,7 @@ INSERT INTO "Heroes" ("Id", "Name") VALUES (27, 'Winston');
 INSERT INTO "Heroes" ("Id", "Name") VALUES (28, 'Wuyang');
 INSERT INTO "Heroes" ("Id", "Name") VALUES (29, 'Zarya');
 INSERT INTO "Heroes" ("Id", "Name") VALUES (30, 'Zenyatta');
+INSERT INTO "Heroes" ("Id", "Name") VALUES (31, 'Vendetta');
 
 -- Table: Items
 INSERT INTO "Items" ("Id", "Name", "ImageUri", "Type", "Cost", "Rarity", "Description") VALUES (1, 'Compensator', 'https://static.wikia.nocookie.net/overwatch_gamepedia/images/e/e5/Compensator.png/revision/latest/scale-to-width-down/100?cb=20250921171408', 'General Item (Weapon)', '1000.0', 'Common', '');
