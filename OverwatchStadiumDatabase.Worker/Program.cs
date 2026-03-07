@@ -23,8 +23,11 @@ builder.Services.AddCrawlerHandlers();
 
 builder.Services.AddSingleton<BackgroundServiceOrchestrator>();
 
+builder.Services.AddScoped<IJsonDataGenerator, JsonDataGenerator>();
+
 builder.Services.AddHostedService<RunCrawlerHandlersBackgroundService>();
 builder.Services.AddHostedService<GenerateSqlScriptBackgroundService>();
+builder.Services.AddHostedService<GenerateJsonDataBackgroundService>();
 builder.Services.AddHostedService<StopApplicationBackgroundService>();
 
 var app = builder.Build();

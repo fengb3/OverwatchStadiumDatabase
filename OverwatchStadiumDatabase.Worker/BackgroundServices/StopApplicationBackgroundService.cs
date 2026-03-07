@@ -9,7 +9,10 @@ public partial class StopApplicationBackgroundService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await orchestrator.WaitForAsync<GenerateSqlScriptBackgroundService>(stoppingToken);
+        await Task.WhenAll(
+            orchestrator.WaitForAsync<GenerateSqlScriptBackgroundService>(stoppingToken),
+            orchestrator.WaitForAsync<GenerateJsonDataBackgroundService>(stoppingToken)
+        );
         hostApplicationLifetime.StopApplication();
     }
 }
