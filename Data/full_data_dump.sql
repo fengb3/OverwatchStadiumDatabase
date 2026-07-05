@@ -1,5 +1,5 @@
 -- Overwatch Stadium Database Full Dump
--- Generated at 2026-07-04T03:55:33.3907410Z
+-- Generated at 2026-07-05T04:14:48.6121622Z
 -- Note: This script is designed to be compatible with SQLite, PostgreSQL, SQL Server, and MySQL (with ANSI_QUOTES enabled).
 
 -- SQL Server: Enable Identity Insert
