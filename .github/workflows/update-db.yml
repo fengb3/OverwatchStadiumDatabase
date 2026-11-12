@@ -2,7 +2,9 @@
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Every day at midnight UTC
+    # Twice a month (1st and 15th) ~ every two weeks.
+    # Stadium mode is no longer receiving content updates, only bug fixes, so daily sync is unnecessary.
+    - cron: '0 0 1,15 * *'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
